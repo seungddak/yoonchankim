@@ -183,8 +183,8 @@ def do_reset(game):
 
 
 # 웹 페이지 화면 구성
-with gr.Blocks(title="Pygame RL Dungeon") as demo:
-    gr.Markdown("# 🛡️ Q-Learning 던전 탐험 (Pygame 원본 유지 버전!)")
+with gr.Blocks(title="Dungeon Escape") as demo:
+    gr.Markdown("# Q-Learning 던전 탐험")
 
     state = gr.State(None)
 
