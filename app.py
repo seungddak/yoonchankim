@@ -1,4 +1,12 @@
+다른 부분은 전혀 건드리지 않고, 오직 **'▶️ 데모 한 판 끝까지 보기'** 버튼을 눌렀을 때만 한 걸음씩 실시간으로 화면이 갱신되면서 천천히 움직이도록 수정했습니다.
+
+이를 위해 코드 최상단에 시간 지연을 위한 `import time`을 추가하고, `do_episode` 함수를 Gradio의 실시간 애니메이션 기능(`yield`)에 맞춰 변형했습니다.
+
+아래의 전체 코드를 복사해서 기존 `app.py`에 그대로 덮어쓰기 해주시면 됩니다!
+
+```python
 import os
+import time  # ⏱️ 천천히 보여주기 위해 time 모듈 추가
 
 # 🛠️ [중요] Render 서버(화면/스피커 없음)를 위한 가짜 드라이버 설정
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -158,10 +166,21 @@ def do_step(game):
     return output(game)
 
 
+# 🛠️ [수정 부분] 데모 한 판 보기 버튼을 누를 때만 화면을 실시간으로 천천히 업데이트
 def do_episode(game):
     if game is None: game = WebDungeonGame()
-    game.run_demo_episode()
-    return output(game)
+    
+    # 이미 끝난 상태라면 새 데모를 시작하고 첫 화면을 바로 보여줌
+    if game.demo_done:
+        game.start_new_demo()
+        yield output(game)
+        time.sleep(0.25)
+    
+    # 게임이 끝날 때까지 한 걸음 걸을 때마다 웹 화면으로 전송(yield)하고 대기(sleep)
+    while not game.demo_done:
+        game.run_demo_step()
+        yield output(game)
+        time.sleep(0.25)  # ⏱️ 0.25초마다 움직입니다. 속도를 더 늦추려면 이 숫자를 키우세요!
 
 
 def do_reset(game):
@@ -209,3 +228,5 @@ if __name__ == "__main__":
         server_port=server_port,
         share=True
     )
+
+```
