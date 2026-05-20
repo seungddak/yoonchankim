@@ -1,4 +1,3 @@
-# app.py
 import os
 
 # 🔥 핵심 꼼수: 화면이 없는 서버에서 Pygame이 터지지 않도록 가상(dummy) 디스플레이 설정!
@@ -37,7 +36,11 @@ class WebDungeonGame:
         self.start_new_demo()
 
     def train_one(self):
-        state = self.env.reset()
+        state = self.env._get_state() if hasattr(self.env, '_get_state') else self.env.reset()
+        # 혹시 기존 env.reset()이 상태를 반환하지 않는 경우를 대비해 안전하게 처리
+        init_state = self.env.reset()
+        state = init_state if init_state is not None else self.env._get_state()
+
         done = False
         result_type = "unknown"
 
@@ -192,6 +195,16 @@ with gr.Blocks(title="Pygame RL Dungeon") as demo:
     episode_btn.click(do_episode, inputs=state, outputs=[state, game_screen, info_panel])
     reset_btn.click(do_reset, inputs=state, outputs=[state, game_screen, info_panel])
 
+# 🛠️ Render 서버용 맞춤 실행부 설정
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "10000"))
-    demo.queue().launch(server_name="0.0.0.0", server_port=port)
+    # Render가 주는 PORT 값을 안전하게 숫자로 가져옵니다. (기본값 10000)
+    server_port = int(os.environ.get("PORT", 10000))
+
+    print(f"🚀 Render 배포 시작 - 포트 번호: {server_port}")
+
+    # 대기열(queue)을 활성화한 후 외부 접속(0.0.0.0)이 가능하도록 문을 열어줍니다.
+    demo.queue().launch(
+        server_name="0.0.0.0",
+        server_port=server_port,
+        show_api=False
+    )
