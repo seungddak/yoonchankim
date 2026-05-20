@@ -1,6 +1,8 @@
 import os
 
+# 🛠️ [중요] Render 서버(화면/스피커 없음)를 위한 가짜 드라이버 설정
 os.environ["SDL_VIDEODRIVER"] = "dummy"
+os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 import random
 import pygame
