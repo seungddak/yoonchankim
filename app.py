@@ -30,7 +30,7 @@ class WebDungeonGame:
         self.step_count = 0
 
         # 서버 시작 시 기본 학습 100번 진행 (친구 코드 아이디어)
-        for _ in range(100):
+        for _ in range(2):
             self.train_one()
         self.start_new_demo()
 
