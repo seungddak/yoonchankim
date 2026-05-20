@@ -1,6 +1,5 @@
 import os
 
-# 🔥 핵심 꼼수: 화면이 없는 서버에서 Pygame이 터지지 않도록 가상(dummy) 디스플레이 설정!
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 import random
