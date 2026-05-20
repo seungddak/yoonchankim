@@ -167,13 +167,13 @@ def do_episode(game):
     if game.demo_done:
         game.start_new_demo()
         yield output(game)
-        time.sleep(0.25)
+        time.sleep(0.6)  # ⏱️ 기존 0.25초에서 0.6초로 변경하여 더 차근차근 보이도록 수정
     
     # 게임이 끝날 때까지 한 걸음 걸을 때마다 웹 화면으로 전송(yield)하고 대기(sleep)
     while not game.demo_done:
         game.run_demo_step()
         yield output(game)
-        time.sleep(0.25)  # ⏱️ 0.25초마다 움직입니다. 속도를 더 늦추려면 이 숫자를 키우세요!
+        time.sleep(0.6)  # ⏱️ 기존 0.25초에서 0.6초로 변경하여 더 차근차근 보이도록 수정
 
 
 def do_reset(game):
